@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import poly.edu.entity.Product;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +16,12 @@ import java.util.List;
 public class ProductController {
 
     //Link: http://localhost:8080/product/form
+
+
+    // giữ items ở cấp instance (controller là singleton => list tồn tại xuyên suốt lifetime app)
+    private final List<Product> items = new ArrayList<>(
+            Arrays.asList(new Product("A", 1.0), new Product("B", 12.0))
+    );
 
     @GetMapping("/product/form")
     public String form(Model model) {
@@ -26,6 +33,7 @@ public class ProductController {
         Product p2 = new Product();
         model.addAttribute("product2", p2);
 
+        model.addAttribute("items", items);
         return "Lab2/bai34";
     }
 
@@ -37,11 +45,12 @@ public class ProductController {
         model.addAttribute("product1", p1);
 
         model.addAttribute("product2", p);
+        items.add(new Product(p.getName(), p.getPrice()));
         return "Lab2/bai34";
     }
 
     @ModelAttribute("items")
     public List<Product> getItems() {
-        return Arrays.asList(new Product("A", 1.0), new Product("B", 12.0));
+        return items;
     }
 }
